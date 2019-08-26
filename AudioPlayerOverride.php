@@ -16,8 +16,6 @@ class AudioPlayerOverride extends AbstractExternalModule
             $index = array_search($instrument,$instrumentList);
             echo "<script>
                 jQuery(document).ready(function() {
-                    
-                jQuery(document).focus();
                     jQuery('audio').each(function() {";
                     if ($autoPlays[$index] == 1) {
                         echo "var endedAudio = false;
