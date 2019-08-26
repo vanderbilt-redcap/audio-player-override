@@ -1,0 +1,58 @@
+{
+  "name": "Audio Player Override",
+
+  "namespace": "Vanderbilt\\AudioPlayerOverride",
+
+  "authors": [
+    {
+      "name": "Ryan Moore",
+      "email": "datacore@vanderbilt.edu",
+      "institution": "Vanderbilt University Medical Center"
+    }
+  ],
+
+  "description": "Affect audio player fields in REDCap in several ways. Currently autoplays them on surveys, and prevents replaying audio tracks.",
+
+  "permissions": [
+    "select_data",
+    "redcap_module_link_check_display",
+    "redcap_survey_page"
+  ],
+
+  "no-auth-pages":[""],
+
+  "project-settings": [
+    {
+      "key": "piping-list",
+      "name": "Settings for Audio Fields by Form",
+      "type": "sub_settings",
+      "repeatable": true,
+      "sub_settings":[
+        {
+          "key": "form",
+          "name": "Survey Form with Audio Fields",
+          "type": "form-list"
+        },
+        {
+          "key": "play-once",
+          "name": "Audio Fields Can Only Play Once",
+          "type": "checkbox"
+        },
+        {
+          "key": "auto-play",
+          "name": "Audio Fields Auto Play on Page Load",
+          "type": "checkbox"
+        }
+      ]
+    }
+  ],
+
+  "system-settings": [
+  ],
+  "compatibility": {
+    "php-version-min": "5.5.0",
+    "php-version-max": "",
+    "redcap-version-min": "8.0.0",
+    "redcap-version-max": ""
+  }
+}
