@@ -16,11 +16,11 @@ class AudioPlayerOverride extends AbstractExternalModule
             $index = array_search($instrument,$instrumentList);
             echo "<script>
                 jQuery(document).ready(function() {
+                    var endedAudio = false;
+                    var lastTime = 0;
                     jQuery('audio').each(function() {";
                     if ($autoPlays[$index] == 1) {
-                        echo "var endedAudio = false;
-                            var lastTime = 0;
-                        jQuery(this).on('canplaythrough', function() {
+                        echo "jQuery(this).on('canplaythrough', function() {
                             //jQuery(this).attr('autoplay',true);
                             jQuery(this).trigger('play');
                         });";
