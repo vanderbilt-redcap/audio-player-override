@@ -16,22 +16,51 @@ class AudioPlayerOverride extends AbstractExternalModule
             $index = array_search($instrument,$instrumentList);
             echo "<script>
                 jQuery(document).ready(function() {
+                    var getClosest = function(elem) {
+                            for ( ; elem && elem !== document; elem = elem.parentNode ) {
+                                if ( elem.id != '' ) return elem.id;
+                            }
+                            return null;
+                        };
                     var endedAudio = false;
                     var lastTime = 0;
-                    jQuery('audio').each(function() {";
+                    var endedOnThisPage = false;
+                    
+                    jQuery('audio').each(function() {
+                        var audioElement = this;
+                        var parentID = getClosest(this);
+                    ";
                     if ($autoPlays[$index] == 1) {
                         echo "jQuery(this).on('canplaythrough', function() {
-                            //jQuery(this).attr('autoplay',true);
-                            jQuery(this).trigger('play');
+                            var playPromise = this.play();
+                            if (playPromise !== undefined && endedAudio != true && endedOnThisPage == false) {
+                                playPromise.then(function () {";
+                                if ($playOnces[$index] == 1) {
+                                    echo "
+                                       if (localStorage.getItem(parentID) == 'played') {
+                                            endedAudio = true;
+                                            audioElement.currentTime = audioElement.duration;
+                                            //audioElement.pause();
+                                       }
+                                       else {
+                                        localStorage.setItem(parentID,'played');
+                                        endedOnThisPage = true;
+                                       }";
+                                }
+                                echo "}).catch(function(error) {
+                                    console.log(error);
+                                });
+                            }
                         });";
                     }
                     if ($playOnces[$index] == 1) {
-                        echo "jQuery(this).on('ended', function () {
+                        echo "
+                       jQuery(this).on('ended', function () {
                             endedAudio = true;
                             jQuery(this).on('play', function () {
                                 jQuery(this).trigger('pause');
                             })
-                        });
+                        });                      
                         
                         jQuery(this).attr('controlsList','nodownload');
                         this.onpause = function() {
@@ -41,12 +70,13 @@ class AudioPlayerOverride extends AbstractExternalModule
                         };
                         
                         jQuery(this).on('timeupdate', function() {
-                            if (endedAudio == true) return false;
-                            if (this.currentTime < lastTime || (this.currentTime - lastTime) > 0.5) {
-                                this.currentTime = lastTime;
-                            }
-                            else {
-                                lastTime = this.currentTime;
+                            if (endedAudio != true) {
+                                if (this.currentTime < lastTime || (this.currentTime - lastTime) > 0.5) {
+                                    this.currentTime = lastTime;
+                                }
+                                else {
+                                    lastTime = this.currentTime;
+                                }
                             }
                         });";
                     }
