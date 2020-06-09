@@ -14,6 +14,7 @@ class AudioPlayerOverride extends AbstractExternalModule
         $browserType = $_SERVER['HTTP_USER_AGENT'];
 
         $isIEorChrome = false;
+        $isIEorChrome = true;
         if (preg_match('~MSIE|Internet Explorer~i', $browserType) || (strpos($browserType, 'Trident/7.0') !== false && strpos($browserType, 'rv:11.0') !== false) || strpos($browserType, 'Chrome/') !== false) {
             $isIEorChrome = true;
         }
