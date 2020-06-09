@@ -42,8 +42,9 @@ class AudioPlayerOverride extends AbstractExternalModule
                             if (playPromise !== undefined && endedAudio != true && endedOnThisPage == false) {
                                 playPromise.then(function () {";
                                 if ($playOnces[$index] == 1) {
-                                    echo "
+                                    /*echo "
                                        if (localStorage.getItem(parentID) == 'played') {
+                                       console.log('here to set endedaudio');
                                             endedAudio = true;
                                             audioElement.currentTime = audioElement.duration;
                                             //audioElement.pause();
@@ -51,7 +52,7 @@ class AudioPlayerOverride extends AbstractExternalModule
                                        else {
                                         localStorage.setItem(parentID,'played');
                                         endedOnThisPage = true;
-                                       }";
+                                       }";*/
                                 }
                                 echo "}).catch(function(error) {
                                     console.log(error);
@@ -62,18 +63,20 @@ class AudioPlayerOverride extends AbstractExternalModule
                     if ($playOnces[$index] == 1) {
                         echo "
                        jQuery(this).on('ended', function () {
+                        if (this.ended == true) {
                             endedAudio = true;
                             jQuery(this).on('play', function () {
                                 jQuery(this).trigger('pause');
                             })
-                        });                      
+                        }
+                       });                      
                         
                         jQuery(this).attr('controlsList','nodownload');
-                        this.onpause = function() {
+                        jQuery(this).on('pause', function() {
                             if (this.ended == false && endedAudio == false) {
                                 jQuery(this).trigger('play');
                             }
-                        };
+                        });
                         
                         jQuery(this).on('timeupdate', function() {
                             if (endedAudio != true) {
