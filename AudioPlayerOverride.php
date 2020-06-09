@@ -11,6 +11,12 @@ class AudioPlayerOverride extends AbstractExternalModule
         $instrumentList = $this->getProjectSetting('form');
         $autoPlays = $this->getProjectSetting('auto-play');
         $playOnces = $this->getProjectSetting('play-once');
+        $browserType = $_SERVER['HTTP_USER_AGENT'];
+
+        $isIEorChrome = false;
+        if (preg_match('~MSIE|Internet Explorer~i', $browserType) || (strpos($browserType, 'Trident/7.0') !== false && strpos($browserType, 'rv:11.0') !== false) || strpos($browserType, 'Chrome/') !== false) {
+            $isIEorChrome = true;
+        }
 
         if (in_array($instrument,$instrumentList)) {
             $index = array_search($instrument,$instrumentList);
@@ -30,7 +36,7 @@ class AudioPlayerOverride extends AbstractExternalModule
                         var audioElement = this;
                         var parentID = getClosest(this);
                     ";
-                    if ($autoPlays[$index] == 1) {
+                    if ($autoPlays[$index] == 1 && $isIEorChrome) {
                         echo "jQuery(this).on('canplaythrough', function() {
                             var playPromise = this.play();
                             if (playPromise !== undefined && endedAudio != true && endedOnThisPage == false) {
