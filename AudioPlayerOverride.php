@@ -64,7 +64,7 @@ class AudioPlayerOverride extends AbstractExternalModule
                        jQuery(this).on('ended', function () {
                             endedAudio = true;
                             jQuery(this).on('play', function () {
-                                jQuery(this).trigger('pause');
+                                //jQuery(this).trigger('pause');
                             })
                         });                      
                         
