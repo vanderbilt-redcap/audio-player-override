@@ -7,7 +7,7 @@ use ExternalModules\ExternalModules;
 
 class AudioPlayerOverride extends AbstractExternalModule
 {
-    function redcap_survey_page($project_id, $record, $instrument, $event_id, $group_id, $survey_hash, int $response_id = NULL, $repeat_instance = 1) {
+    function redcap_survey_page($project_id, $record, $instrument, $event_id, $group_id, $survey_hash, $response_id = NULL, $repeat_instance = 1) {
         $instrumentList = $this->getProjectSetting('form');
         $autoPlays = $this->getProjectSetting('auto-play');
         $playOnces = $this->getProjectSetting('play-once');
