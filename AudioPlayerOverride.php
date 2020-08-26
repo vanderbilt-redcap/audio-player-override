@@ -27,25 +27,26 @@ class AudioPlayerOverride extends AbstractExternalModule
                                 if ( elem.id != '' ) return elem.id;
                             }
                             return null;
-                        };
-                    var endedAudio = false;
-                    var lastTime = 0;
-                    var endedOnThisPage = false;
+                                                    };
+                    const playerTimes = {};
+                    const endAudio = {};
                     
                     jQuery('audio').each(function() {
                         var audioElement = this;
                         var parentID = getClosest(this);
+                        playerTimes[parentID] = 0;
+                        endAudio[parentID] = false;
                     ";
                     if ($autoPlays[$index] == 1 && $isIEorChrome) {
                         echo "jQuery(this).on('canplaythrough', function() {
                             var playPromise = this.play();
-                            if (playPromise !== undefined && endedAudio != true && endedOnThisPage == false) {
+                            if (playPromise !== undefined && endAudio[parentID] != true) {
                                 playPromise.then(function () {";
                                 if ($playOnces[$index] == 1) {
                                     /*echo "
                                        if (localStorage.getItem(parentID) == 'played') {
-                                       console.log('here to set endedaudio');
-                                            endedAudio = true;
+                                       console.log('here to set endAudio[parentID]');
+                                            endAudio[parentID] = true;
                                             audioElement.currentTime = audioElement.duration;
                                             //audioElement.pause();
                                        }
@@ -63,29 +64,34 @@ class AudioPlayerOverride extends AbstractExternalModule
                     if ($playOnces[$index] == 1) {
                         echo "
                        jQuery(this).on('ended', function () {
+                        if (this.paused != true) {
+                            playerTimes[parentID] = this.duration;
+                        }
                         if (this.ended == true) {
-                            endedAudio = true;
+                            endAudio[parentID] = true;
                             this.onplaying = function () {
                                 jQuery(this).trigger('pause');
                             };
                         }
                        });                      
-                        
+                        jQuery(this).on('play',function() {
+                            this.currentTime = playerTimes[parentID];
+                        });
                         jQuery(this).attr('controlsList','nodownload');
                         
                         jQuery(this).on('pause', function() {
-                            if (this.ended == false && endedAudio == false) {
+                            if (this.ended == false && endAudio[parentID] == false) {
                                 jQuery(this).trigger('play');
                             }
                         });
                         
                         jQuery(this).on('timeupdate', function() {
-                            if (endedAudio != true) {
-                                if (this.currentTime < lastTime || (this.currentTime - lastTime) > 0.5) {
-                                    this.currentTime = lastTime;
+                            if (endAudio[parentID] != true) {
+                                if (this.currentTime < playerTimes[parentID] || (this.currentTime - playerTimes[parentID]) > 0.5 || this.paused) {
+                                    this.currentTime = playerTimes[parentID];
                                 }
                                 else {
-                                    lastTime = this.currentTime;
+                                    playerTimes[parentID] = this.currentTime;
                                 }
                             }
                         });";
