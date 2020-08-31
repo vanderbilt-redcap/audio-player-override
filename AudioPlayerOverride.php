@@ -87,7 +87,7 @@ class AudioPlayerOverride extends AbstractExternalModule
                         
                         jQuery(this).on('timeupdate', function() {
                             if (endAudio[parentID] != true) {
-                                if (this.currentTime < playerTimes[parentID] || (this.currentTime - playerTimes[parentID]) > 0.3 || this.paused) {
+                                if (this.currentTime < playerTimes[parentID] || (this.currentTime - playerTimes[parentID]) > 0.5 || this.paused) {
                                     this.currentTime = playerTimes[parentID];
                                 }
                                 else {
